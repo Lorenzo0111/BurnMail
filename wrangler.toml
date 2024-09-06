@@ -1,0 +1,11 @@
+name = "burnmail"
+compatibility_date = "2024-09-06"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "burnmail"
+database_id = "10165c9d-6c91-41b0-9d8c-59b1cbfc20de"
+migrations_dir = "drizzle/migrations"
+
+[vars]
+DOMAIN = "burnmail.dev"
