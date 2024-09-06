@@ -4,7 +4,8 @@
   "author": "Lorenzo0111",
   "license": "MIT",
   "scripts": {
-    "dev": "turbo dev"
+    "dev": "turbo dev",
+    "build": "turbo build"
   },
   "devDependencies": {
     "turbo": "^2.1.1"
