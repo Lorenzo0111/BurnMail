@@ -1,21 +1,13 @@
 {
   "name": "burnmail",
+  "version": "1.0.0",
+  "author": "Lorenzo0111",
+  "license": "MIT",
   "scripts": {
-    "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts",
-    "db:generate": "drizzle-kit generate",
-    "db:up": "drizzle-kit up",
-    "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
-  },
-  "dependencies": {
-    "drizzle-orm": "^0.33.0",
-    "hono": "^4.5.11"
+    "dev": "turbo dev"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240529.0",
-    "drizzle-kit": "^0.24.2",
-    "wrangler": "^3.57.2"
+    "turbo": "^2.1.1"
   },
   "packageManager": "pnpm@9.9.0"
 }

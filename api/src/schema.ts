@@ -4,9 +4,7 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 export const addresses = sqliteTable("addresses", {
   email: text("email").notNull().primaryKey(),
   token: text("token").notNull(),
-  createdAt: integer("timestamp", { mode: "timestamp" })
-    .notNull()
-    .default(sql`(CURRENT_TIMESTAMP)`),
+  createdAt: integer("timestamp", { mode: "timestamp" }).notNull(),
 });
 
 export const addressesRelations = relations(addresses, ({ many }) => ({
@@ -21,9 +19,8 @@ export const emails = sqliteTable("emails", {
       onUpdate: "cascade",
     })
     .notNull(),
-  createdAt: integer("timestamp", { mode: "timestamp" }).default(
-    sql`(CURRENT_TIMESTAMP)`
-  ),
+  createdAt: integer("timestamp", { mode: "timestamp" }).notNull(),
+  sender: text("sender").notNull(),
   title: text("title").notNull(),
   body: text("body").notNull(),
 });

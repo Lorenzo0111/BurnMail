@@ -1,11 +1,16 @@
+import { zValidator } from "@hono/zod-validator";
 import { eq, lt } from "drizzle-orm";
 import type { DrizzleD1Database } from "drizzle-orm/d1";
 import { drizzle } from "drizzle-orm/d1";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { z } from "zod";
 import * as schema from "./schema";
 
 export interface Bindings {
   DB: D1Database;
+  DOMAIN: string;
+  ADMIN_TOKEN: string;
 }
 
 export interface Variables {
@@ -13,7 +18,13 @@ export interface Variables {
 }
 
 const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
-
+  .use(
+    cors({
+      origin: "*",
+      allowMethods: ["GET", "POST"],
+      allowHeaders: ["Authorization"],
+    })
+  )
   .use((ctx, next) => {
     const db = drizzle(ctx.env.DB, { schema });
     ctx.set("db", db);
@@ -25,52 +36,62 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
 
     const token = crypto.randomUUID();
     const key = Math.random().toString(36).substring(2, 12);
-    const email = `${key}@${process.env.DOMAIN}`;
+    const email = `${key}@${ctx.env.DOMAIN}`;
 
     await db.insert(schema.addresses).values({
       token,
       email,
+      createdAt: new Date(),
     });
 
     return ctx.json({ token, email });
   })
 
-  .get("/", async (ctx) => {
-    const db = ctx.get("db");
-    const auth = ctx.req.header("Authorization");
-    const token = auth?.split(" ")[1];
+  .get(
+    "/",
+    zValidator(
+      "header",
+      z.object({
+        authorization: z.string(),
+      })
+    ),
+    async (ctx) => {
+      const db = ctx.get("db");
+      const auth = ctx.req.valid("header").authorization;
+      const token = auth?.split(" ")[1];
 
-    if (!token) return ctx.json({ error: "Unauthorized" }, 401);
+      if (!token) return ctx.json({ error: "Unauthorized" }, 401);
 
-    const address = await db.query.addresses.findFirst({
-      where: eq(schema.addresses.token, token),
-      with: {
-        emails: true,
-      },
-    });
+      const address = await db.query.addresses.findFirst({
+        where: eq(schema.addresses.token, token),
+        with: {
+          emails: true,
+        },
+      });
 
-    if (!address) return ctx.json({ error: "Unauthorized" }, 401);
+      if (!address) return ctx.json({ error: "Unauthorized" }, 401);
 
-    if (new Date().getTime() - address.createdAt.getTime() > 3600000) {
-      await db
-        .delete(schema.addresses)
-        .where(eq(schema.addresses.email, address.email));
+      if (new Date().getTime() - address.createdAt.getTime() > 3600000) {
+        await db
+          .delete(schema.addresses)
+          .where(eq(schema.addresses.email, address.email));
 
-      return ctx.json({ error: "Email expired", expired: true }, 401);
+        return ctx.json({ error: "Email expired", expired: true }, 401);
+      }
+
+      return ctx.json({
+        ...address,
+        token: undefined,
+      });
     }
-
-    return ctx.json({
-      ...address,
-      token: undefined,
-    });
-  })
+  )
 
   .post("/cleanup", async (ctx) => {
     const db = ctx.get("db");
     const auth = ctx.req.header("Authorization");
     const token = auth?.split(" ")[1];
 
-    if (!token || token !== process.env.ADMIN_TOKEN)
+    if (!token || token !== ctx.env.ADMIN_TOKEN)
       return ctx.json({ error: "Unauthorized" }, 401);
 
     await db
@@ -82,7 +103,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
     return ctx.json({ success: true });
   });
 
-export type App = typeof app;
+export type AppType = typeof app;
 export default {
   fetch: app.fetch,
   async email(message: ForwardableEmailMessage, env: Bindings) {
@@ -114,6 +135,8 @@ export default {
       emailKey: address.email,
       title: message.headers.get("subject") ?? "No subject",
       body: buffer,
+      createdAt: new Date(),
+      sender: message.from,
     });
   },
 };

@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "3fb1bdf3-ec97-4f9e-9520-6d61f66c8af4",
+  "id": "fd1de5cd-9566-420a-9e3d-4debcab8e77a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "addresses": {
@@ -26,8 +26,7 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(CURRENT_TIMESTAMP)"
+          "autoincrement": false
         }
       },
       "indexes": {},
@@ -56,9 +55,8 @@
           "name": "timestamp",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false,
-          "default": "(CURRENT_TIMESTAMP)"
+          "notNull": true,
+          "autoincrement": false
         },
         "title": {
           "name": "title",
@@ -69,13 +67,6 @@
         },
         "body": {
           "name": "body",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "html": {
-          "name": "html",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
