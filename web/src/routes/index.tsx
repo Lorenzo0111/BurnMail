@@ -28,7 +28,7 @@ function Index() {
 
       if (!res.ok) {
         if (res.status === 401) {
-          regenerateToken();
+          createEmail();
         }
 
         throw new Error();
@@ -39,7 +39,7 @@ function Index() {
     refetchInterval: 60000,
   });
 
-  const regenerateToken = () => {
+  const createEmail = () => {
     setLoading(true);
 
     fetcher.generate
@@ -54,7 +54,7 @@ function Index() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) regenerateToken();
+    if (!token) createEmail();
     else {
       setToken(token);
       setLoading(false);
@@ -75,6 +75,8 @@ function Index() {
               description: "Copied to clipboard",
             });
           }}
+          aria-label="Copy email"
+          role="button"
         >
           <Clipboard />
         </Button>
@@ -83,11 +85,17 @@ function Index() {
           readOnly
           className="border-0 bg-secondary rounded-none"
           value={data?.email}
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Email address"
         />
         <Button
-          onClick={regenerateToken}
+          onClick={createEmail}
           variant="secondary"
           className="border-l-0 rounded-l-none"
+          aria-label="New email address"
+          role="button"
         >
           <RefreshCcw className={loading || isLoading ? "animate-spin" : ""} />
         </Button>

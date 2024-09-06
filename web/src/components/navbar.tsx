@@ -15,7 +15,7 @@ export function Navbar() {
       </div>
 
       <a href="https://github.com/Lorenzo0111/BurnMail" target="_blank">
-        <SiGithub />
+        <SiGithub aria-label="GitHub" />
       </a>
     </nav>
   );
