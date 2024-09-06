@@ -2,7 +2,7 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 
 export function Navbar() {
   return (
-    <nav className="p-4 flex items-center justify-between w-full">
+    <nav className="md:p-4 flex items-center justify-between w-full">
       <div className="flex gap-2 items-center">
         <img
           src="/logo.svg"
