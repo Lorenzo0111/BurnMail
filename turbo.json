@@ -11,6 +11,10 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist"]
+    },
+    "deploy": {
+      "dependsOn": ["^deploy"],
+      "cache": false
     }
   }
 }

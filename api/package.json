@@ -1,5 +1,6 @@
 {
   "name": "api",
+  "version": "1.0.0",
   "types": "src/index.ts",
   "scripts": {
     "dev": "wrangler dev src/index.ts",
