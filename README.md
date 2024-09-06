@@ -18,8 +18,6 @@ BurnMail is a simple service that allows you to create temporary email addresses
 
 You'll have to set the following environment variables to setup the backend and frontend, here is a list of them:
 
-> ✨ You can generate secret tokens by visiting [this link](https://generate-secret.vercel.app/32)
-
 - [Backend Environment Variables](api/.env.example)
 - [Frontend Environment Variables](web/.env.example)
 

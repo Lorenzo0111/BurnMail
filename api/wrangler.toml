@@ -9,3 +9,6 @@ migrations_dir = "drizzle/migrations"
 
 [vars]
 DOMAIN = "burnmail.dev"
+
+[triggers]
+crons = ["0 0 * * *"]

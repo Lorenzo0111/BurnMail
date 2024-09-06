@@ -10,7 +10,6 @@ import * as schema from "./schema";
 export interface Bindings {
   DB: D1Database;
   DOMAIN: string;
-  ADMIN_TOKEN: string;
 }
 
 export interface Variables {
@@ -84,24 +83,7 @@ const app = new Hono<{ Bindings: Bindings; Variables: Variables }>()
         token: undefined,
       });
     }
-  )
-
-  .post("/cleanup", async (ctx) => {
-    const db = ctx.get("db");
-    const auth = ctx.req.header("Authorization");
-    const token = auth?.split(" ")[1];
-
-    if (!token || token !== ctx.env.ADMIN_TOKEN)
-      return ctx.json({ error: "Unauthorized" }, 401);
-
-    await db
-      .delete(schema.addresses)
-      .where(
-        lt(schema.addresses.createdAt, new Date(new Date().getTime() - 3600000))
-      );
-
-    return ctx.json({ success: true });
-  });
+  );
 
 export type AppType = typeof app;
 export default {
@@ -138,5 +120,14 @@ export default {
       createdAt: new Date(),
       sender: message.from,
     });
+  },
+  async scheduled(_event: ScheduledEvent, env: Bindings) {
+    const db = drizzle(env.DB, { schema });
+
+    await db
+      .delete(schema.addresses)
+      .where(
+        lt(schema.addresses.createdAt, new Date(new Date().getTime() - 3600000))
+      );
   },
 };
