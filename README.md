@@ -1,4 +1,4 @@
-# BurnMail
+![Title](https://github.com/Lorenzo0111/BurnMail/blob/main/media/Title.png?raw=true")
 
 <div align="center">
 
@@ -12,7 +12,7 @@
 
 BurnMail is a simple service that allows you to create temporary email addresses that will be deleted after a certain amount of time.
 
-<img src="https://github.com/Lorenzo0111/BurnMail/blob/main/media/Dashboard.png?raw=true" />
+![Dashboard](https://github.com/Lorenzo0111/BurnMail/blob/main/media/Dashboard.png?raw=true")
 
 ## Deploying
 
@@ -26,6 +26,7 @@ You'll have to set the following environment variables to setup the backend and 
 > 🚨 Remember to also edit the database id in the [wrangler.toml](api/wrangler.toml)
 
 ### Cloudflare Workers
+
 You can deploy both, frontend and backend, to Cloudflare Workers by running the following commands:
 
 ```bash
